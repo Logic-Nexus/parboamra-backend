@@ -15,12 +15,12 @@ sequelize
   })
   .then(() => {
     // console.log("Database connected");
-    for (let i = 0; i < 5; i++) {
-      User.create({
-        name: `User ${i}`,
-        email: `test${i}@gmail.com`,
-      });
-    }
+    // for (let i = 0; i < 5; i++) {
+    //   User.create({
+    //     name: `User ${i}`,
+    //     email: `test${i}@gmail.com`,
+    //   });
+    // }
   })
   .catch((err) => {
     console.log("Unable to connect to database", err);
