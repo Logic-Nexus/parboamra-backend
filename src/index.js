@@ -1,6 +1,6 @@
 const express = require("express");
 const sequelize = require("./database");
-const User = require("./user");
+const User = require("../user");
 const app = express();
 require("dotenv").config();
 
@@ -44,6 +44,12 @@ app.get("/", async (req, res) => {
   //   result,
   // });
   res.send("Hello world");
+});
+app.get("/getuser", async (req, res) => {
+  res.send({
+    number: 1,
+    result: "test",
+  });
 });
 
 // / catch 404 and forward to error handler
