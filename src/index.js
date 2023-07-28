@@ -27,22 +27,23 @@ sequelize
   });
 
 app.get("/", async (req, res) => {
-  const result = await User.findAll();
+  // const result = await User.findAll();
 
-  //   console.log(result);
-  const count = result.length;
+  // //   console.log(result);
+  // const count = result.length;
 
-  if (!count || count === 0) {
-    return res.status(404).send({
-      error: "Not found",
-      status: 404,
-    });
-  }
+  // if (!count || count === 0) {
+  //   return res.status(404).send({
+  //     error: "Not found",
+  //     status: 404,
+  //   });
+  // }
 
-  res.send({
-    number: count,
-    result,
-  });
+  // res.send({
+  //   number: count,
+  //   result,
+  // });
+  res.send("Hello world");
 });
 
 // / catch 404 and forward to error handler
@@ -61,3 +62,5 @@ app.use(function (err, req, res, next) {
 app.listen(port, () => {
   console.log(`Server running on port http://localhost:${port}`);
 });
+
+module.exports = app;
