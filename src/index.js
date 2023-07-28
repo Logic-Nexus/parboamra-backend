@@ -43,7 +43,7 @@ app.get("/", async (req, res) => {
   //   number: count,
   //   result,
   // });
-  res.send("Hello world");
+  res.send("Hello world!!!! EMON");
 });
 app.get("/getuser", async (req, res) => {
   res.send({
