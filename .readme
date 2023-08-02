@@ -1,36 +1,55 @@
-to open prisma studio -
--------------------------
-+ npx prisma studio
+## to open prisma studio -
 
-to install prisma client -
--------------------------
-+ npm install @prisma/client
+- npx prisma studio
 
-to generate prisma client -
----------------------------
-+ npx prisma generate
+## to install prisma client -
 
+- npm install @prisma/client
+
+## to generate prisma client -
+
+- npx prisma generate
 
 ////////////////////////////////////
 
-for prisma -
-------------
+## for prisma -
 
-setup database -
-----------------
-+ npx prisma init --datasource-provider postgresql
+## setup database -
 
-push to database -
-------------------
-+ npx prisma db push    ///to sync schema with database and create tables in database
+- npx prisma init --datasource-provider postgresql
 
+create migration -
+npx prisma migrate --name "init" --create-only
 
-run seed 
---------
-+ npx prisma db seed --preview-feature
+## run migration -
 
-+ npm i --save esbuild
+npx prisma migrate deploy
 
-express validator -
--------------------
-+ npm i express-validator
+## push to database -
+
+- npx prisma db push ///to sync schema with database and create tables in database
+
+## run seed
+
+- npx prisma db seed --preview-feature
+
+- npm i --save esbuild
+
+## express validator -
+
+- npm i express-validator
+
+Create a migration from changes in Prisma schema, apply it to the database, trigger generators (e.g. Prisma Client)
+$ prisma migrate dev
+
+Reset your database and apply all migrations
+$ prisma migrate reset
+
+Apply pending migrations to the database in production/staging
+$ prisma migrate deploy
+
+Check the status of migrations in the production/staging database
+$ prisma migrate status
+
+Specify a schema
+$ prisma migrate status --schema=./schema.prisma

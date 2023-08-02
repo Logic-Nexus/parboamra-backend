@@ -13,35 +13,41 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  name      String
-  password  String?
+  phone     Int      @unique
+  firstName String?
+  lastName  String?
+  userName  String   @unique @db.VarChar(15) // 15 characters
+  password  String   @db.VarChar(20) // 20 characters
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  posts     Post[]
-  tokens    Token[]
-  role      Role     @default(ADMIN)
+  role      Role     @default(USER)
+  profile   Profile? // one-to-one relation with Profile model
+
+  @@index([firstName, lastName], name: "user_name") // composite index on firstName and lastName columns with name user_name
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int      @unique
-}
+model Profile {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id]) // one-to-one relation with User model 
 
-model Token {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bio       String?   @db.VarChar(250) // 250 characters
+  image     String?
+  address   String    @db.VarChar(250) // 250 characters
+  district  String?   @db.VarChar(250) // 250 characters
+  city      String    @db.VarChar(250) // 250 characters
+  country   String?   @db.VarChar(250) // 250 characters
+  zipCode   String?   @db.VarChar(80) // 250 characters
+  gender    String?   @db.VarChar(80) // 250 characters
+  birthDate DateTime? @db.Date
+
+  @@index([userId, address], name: "user_address") // composite index on userId and address columns with name user_address 
 }
 
 enum Role {
   USER
+  TEACHER
   ADMIN
 }
