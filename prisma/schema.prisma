@@ -13,11 +13,13 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  name      String?
-  password  String
+  name      String
+  password  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   posts     Post[]
+  tokens    Token[]
+  role      Role     @default(ADMIN)
 }
 
 model Post {
@@ -28,4 +30,18 @@ model Post {
   updatedAt DateTime @updatedAt
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int      @unique
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
+}
+
+enum Role {
+  USER
+  ADMIN
 }

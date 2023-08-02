@@ -1,0 +1,32 @@
+to open prisma studio -
+-------------------------
++ npx prisma studio
+
+to install prisma client -
+-------------------------
++ npm install @prisma/client
+
+to generate prisma client -
+---------------------------
++ npx prisma generate
+
+
+////////////////////////////////////
+
+for prisma -
+------------
+
+setup database -
+----------------
++ npx prisma init --datasource-provider postgresql
+
+push to database -
+------------------
++ npx prisma db push    ///to sync schema with database and create tables in database
+
+
+run seed 
+--------
++ npx prisma db seed --preview-feature
+
++ npm i --save esbuild
