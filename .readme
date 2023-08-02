@@ -30,3 +30,7 @@ run seed
 + npx prisma db seed --preview-feature
 
 + npm i --save esbuild
+
+express validator -
+-------------------
++ npm i express-validator
