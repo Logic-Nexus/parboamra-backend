@@ -73,21 +73,11 @@ export const findExistingUser = async (data: any): Promise<User | null> => {
 };
 
 //create user profile
-// userId    Int       @unique
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-//   bio       String?   @db.VarChar(250)
-//   image     String?
-//   address   String    @db.VarChar(250)
-//   district  String?   @db.VarChar(250)
-//   city      String    @db.VarChar(250)
-//   country   String?   @db.VarChar(250)
-//   zipCode   String?   @db.VarChar(80)
-//   gender    String?   @db.VarChar(80)
-//   birthDate DateTime? @db.Date
-//   user      User      @relation(fields: [userId], references: [id])
 
 export const createUserProfile = async (data: any) => {
+  const birthDate = new Date(data.birthDate); // Convert the date string to a Date object
+  const isoBirthDate = birthDate.toISOString();
+
   const result = await db.profile.create({
     data: {
       address: data.address,
@@ -97,11 +87,11 @@ export const createUserProfile = async (data: any) => {
       district: data.district,
       zipCode: data.zipCode,
       gender: data.gender,
-      birthDate: data.birthDate,
+      birthDate: isoBirthDate,
       image: data.image,
       user: {
         connect: {
-          id: data.userId,
+          id: parseInt(data.userId.toString()),
         },
       },
     },

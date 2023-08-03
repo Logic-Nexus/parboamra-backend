@@ -11,7 +11,7 @@ export const uploadMiddleware = (req: any, res: any, next: any) => {
   });
   upload.single("attachment")(req, res, (err: any) => {
     if (err) {
-      return res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: err });
     }
     if (!req.file) return res.status(400).json({ message: "File not found" });
 

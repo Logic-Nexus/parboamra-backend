@@ -44,19 +44,26 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 //create user profile
-userRouter.post("/profile", uploadMiddleware, async (req, res) => {
-  console.log(req.body);
+userRouter.post("/profile", uploadMiddleware, async (req: any, res) => {
   try {
+    if (!req.body.userId)
+      return res.status(400).json({ message: "User Id is required" });
+
+    if (!req.fileUrl)
+      return res.status(400).json({ message: "Image is required" });
+
     const data = {
       ...req.body,
-      // image: req.fileUrl ? req.fileUrl : "",
+      image: req?.fileUrl,
     };
-    // const userProfile = await createUserProfile(req.body);
-    // console.log(users);
-    // if (userProfile) {
-    //   return res.status(200).json(userProfile);
-    // }
+    // console.log(data);
+    const userProfile = await createUserProfile(data);
+    // // console.log(users);
+    if (userProfile) {
+      return res.status(200).json(userProfile);
+    }
   } catch (error: any) {
-    return res.status(500).json({ message: error.meta });
+    // console.log(error);
+    return res.status(500).json({ message: error });
   }
 });
