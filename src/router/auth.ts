@@ -4,12 +4,14 @@ import type { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
 import { findExistingUser } from "../Services/User/user.service";
 import { registerUser } from "../Services/Auth/auth.service";
+import { comparePassword, hashPassword } from "../Others/SecurePassword";
 
 export const authRouter = express.Router();
 
 //create user
 authRouter.post("/register", async (req: Request, res: Response) => {
-  // console.log(req.body.email);
+  const password = await hashPassword(req.body.password);
+
   try {
     //first check if user already exists
     const userIsExist = await findExistingUser(req.body);
@@ -25,7 +27,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
       email: req.body.email,
       role: req.body.role,
       phone: req.body.phone,
-      password: req.body.password,
+      password: password,
     };
     const user = await registerUser(data);
     // console.log(user);

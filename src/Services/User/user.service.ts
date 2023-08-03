@@ -24,7 +24,7 @@ export const getUserById = async (id: number) => {
     },
   });
   // console.log(result);
-  return exclude(result, ["password"]);
+  return result;
 };
 
 //findUser By Email
@@ -79,6 +79,18 @@ export const createUserProfile = async (data: any) => {
     },
   });
 
+  // console.log(result);
+  return result;
+};
+
+//delete user
+
+export const deleteUser = async (id: number) => {
+  const result = await db.user.delete({
+    where: {
+      id: id,
+    },
+  });
   // console.log(result);
   return result;
 };
