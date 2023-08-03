@@ -1,11 +1,8 @@
 import multer from "multer";
 import fs from "fs";
-import path from "path";
-
 // Multer Configuration
 
 export const uploadMiddleware = (req: any, res: any, next: any) => {
-  let count = 0;
   const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
@@ -16,6 +13,8 @@ export const uploadMiddleware = (req: any, res: any, next: any) => {
     if (err) {
       return res.status(400).json({ message: err.message });
     }
+    if (!req.file) return res.status(400).json({ message: "File not found" });
+
     const { buffer, mimetype, originalname } = req?.file as any;
     const fileName = `${originalname}-${Math.floor(
       Math.random() * 100 * Date.now()

@@ -53,3 +53,9 @@ $ prisma migrate status
 
 Specify a schema
 $ prisma migrate status --schema=./schema.prisma
+
+## revert migration -
+
+---
+
+npx prisma migrate reset

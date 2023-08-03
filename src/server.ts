@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { userRouter } from "./router/user";
 import { fileRouter } from "./Others/File/FileRouter";
+import { authRouter } from "./router/auth";
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use("/media", express.static("uploadFile"));
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/file", fileRouter);
+app.use("/api/v1", authRouter);
 
 if (!process.env.PORT) {
   process.exit(1);

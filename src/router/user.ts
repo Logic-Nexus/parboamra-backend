@@ -5,8 +5,7 @@ import { body, validationResult } from "express-validator";
 import {
   getUserList,
   getUserById,
-  getUserProfile,
-  createUser,
+  createUserProfile,
 } from "../Services/User/user.service";
 import { uploadMiddleware } from "../Others/File/fileUploadController";
 
@@ -24,7 +23,7 @@ userRouter.get("/", async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Not Found" });
     }
   } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error });
   }
 });
 
@@ -40,33 +39,24 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Not Found" });
     }
   } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error });
   }
 });
 
-//create user
-userRouter.post("/register", uploadMiddleware, async (req: any, res) => {
-  const data = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    role: req.body.role,
-    profile: {
-      bio: req.body.bio,
-      image: req.fileUrl,
-    },
-  };
-  console.log(data);
+//create user profile
+userRouter.post("/profile", uploadMiddleware, async (req, res) => {
+  console.log(req.body);
   try {
-    // const user = await createUser(data) ;
-    // // console.log(users);
-    // if (user) {
-    //   return res.status(200).json(user);
-    // } else {
-    //   return res.status(404).json({ message: "Not Found" });
+    const data = {
+      ...req.body,
+      // image: req.fileUrl ? req.fileUrl : "",
+    };
+    // const userProfile = await createUserProfile(req.body);
+    // console.log(users);
+    // if (userProfile) {
+    //   return res.status(200).json(userProfile);
     // }
-    return res.status(200).json(data);
   } catch (error: any) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.meta });
   }
 });

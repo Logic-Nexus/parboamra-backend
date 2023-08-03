@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,34 +13,33 @@ model User {
   phone     Int      @unique
   firstName String?
   lastName  String?
-  userName  String   @unique @db.VarChar(15) // 15 characters
-  password  String   @db.VarChar(20) // 20 characters
+  userName  String   @unique @db.VarChar(15)
+  password  String   @db.VarChar(20)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  role      Role     @default(USER)
-  profile   Profile? // one-to-one relation with Profile model
+  role      Role?    @default(USER)
+  profile   Profile?
 
-  @@index([firstName, lastName], name: "user_name") // composite index on firstName and lastName columns with name user_name
+   @@unique(fields: [email, phone,userName], name: "user_email_phone_username")
 }
 
 model Profile {
-  id     Int  @id @default(autoincrement())
-  userId Int  @unique
-  user   User @relation(fields: [userId], references: [id]) // one-to-one relation with User model 
-
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  bio       String?   @db.VarChar(250) // 250 characters
+  bio       String?   @db.VarChar(250)
   image     String?
-  address   String    @db.VarChar(250) // 250 characters
-  district  String?   @db.VarChar(250) // 250 characters
-  city      String    @db.VarChar(250) // 250 characters
-  country   String?   @db.VarChar(250) // 250 characters
-  zipCode   String?   @db.VarChar(80) // 250 characters
-  gender    String?   @db.VarChar(80) // 250 characters
+  address   String    @db.VarChar(250)
+  district  String?   @db.VarChar(250)
+  city      String    @db.VarChar(250)
+  country   String?   @db.VarChar(250)
+  zipCode   String?   @db.VarChar(80)
+  gender    String?   @db.VarChar(80)
   birthDate DateTime? @db.Date
+  user      User      @relation(fields: [userId], references: [id])
 
-  @@index([userId, address], name: "user_address") // composite index on userId and address columns with name user_address 
+  @@index([userId, address], map: "user_address")
 }
 
 enum Role {

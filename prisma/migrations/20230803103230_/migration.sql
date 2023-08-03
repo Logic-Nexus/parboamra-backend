@@ -12,7 +12,7 @@ CREATE TABLE "User" (
     "password" VARCHAR(20) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "role" "Role" NOT NULL DEFAULT 'USER',
+    "role" "Role" DEFAULT 'USER',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -46,7 +46,7 @@ CREATE UNIQUE INDEX "User_phone_key" ON "User"("phone");
 CREATE UNIQUE INDEX "User_userName_key" ON "User"("userName");
 
 -- CreateIndex
-CREATE INDEX "user_name" ON "User"("firstName", "lastName");
+CREATE UNIQUE INDEX "User_email_phone_userName_key" ON "User"("email", "phone", "userName");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Profile_userId_key" ON "Profile"("userId");
