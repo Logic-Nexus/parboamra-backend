@@ -24,23 +24,17 @@ export const getUserById = async (id: number) => {
     },
   });
   // console.log(result);
-  return exclude(result, ["password"]);
+  return result;
 };
 
-//findUser By Email
 
+//findUser By Email
 export const findExistingUser = async (data: any): Promise<User | null> => {
-  // console.log(data);
-  const result = await db.user.findUnique({
+  const result = await db.user.findFirst({
     where: {
-      user_email_phone_username: {
-        userName: data.userName,
-        phone: parseInt(data.phone.toString()),
-        email: data.email,
-      },
+      OR: [{ email: data.email }, { userName: data.userName }],
     },
   });
-  // console.log(result);
   return result;
 };
 
@@ -79,6 +73,18 @@ export const createUserProfile = async (data: any) => {
     },
   });
 
+  // console.log(result);
+  return result;
+};
+
+//delete user
+
+export const deleteUser = async (id: number) => {
+  const result = await db.user.delete({
+    where: {
+      id: id,
+    },
+  });
   // console.log(result);
   return result;
 };
