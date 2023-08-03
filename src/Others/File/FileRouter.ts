@@ -22,7 +22,7 @@ fileRouter.post("/", upload.single("attachment"), async (req, res) => {
     return res.status(200).json({
       message: "Upload file success",
       fileName,
-      path: `http://localhost:4000/image/${fileName}`,
+      path: `${process.env.LIVE_URL}/media/${fileName}`,
     });
   } catch (error: any) {
     return res.status(500).json({ message: error.message });

@@ -50,17 +50,27 @@ export const createUserProfile = async (data: any) => {
   const birthDate = new Date(data.birthDate); // Convert the date string to a Date object
   const isoBirthDate = birthDate.toISOString();
 
-  const result = await db.profile.create({
-    data: {
-      address: data.address,
-      bio: data.bio,
-      city: data.city,
-      country: data.country,
-      district: data.district,
-      zipCode: data.zipCode,
-      gender: data.gender,
-      birthDate: isoBirthDate,
-      image: data.image,
+  const forUpdateOrCreate = {
+    address: data.address,
+    bio: data.bio,
+    city: data.city,
+    country: data.country,
+    district: data.district,
+    zipCode: data.zipCode,
+    gender: data.gender,
+    birthDate: isoBirthDate,
+    image: data.image,
+  };
+
+  const result = await db.profile.upsert({
+    where: {
+      userId: parseInt(data.userId.toString()),
+    },
+    update: {
+      ...forUpdateOrCreate,
+    },
+    create: {
+      ...forUpdateOrCreate,
       user: {
         connect: {
           id: parseInt(data.userId.toString()),
@@ -68,6 +78,7 @@ export const createUserProfile = async (data: any) => {
       },
     },
   });
+
   // console.log(result);
   return result;
 };

@@ -44,7 +44,7 @@ userRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 //create user profile
-userRouter.post("/profile", uploadMiddleware, async (req: any, res) => {
+userRouter.put("/profile", uploadMiddleware, async (req: any, res) => {
   try {
     if (!req.body.userId)
       return res.status(400).json({ message: "User Id is required" });
