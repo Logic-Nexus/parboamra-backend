@@ -11,7 +11,7 @@ export const getUserList = async () => {
     },
   });
   // console.log(result);
-  return exclude(result, ["password"]);
+  return result.map((user) => exclude(user, ["password"]));
 };
 
 export const getUserById = async (id: number) => {
