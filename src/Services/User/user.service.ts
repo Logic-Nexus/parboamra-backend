@@ -27,20 +27,14 @@ export const getUserById = async (id: number) => {
   return result;
 };
 
-//findUser By Email
 
+//findUser By Email
 export const findExistingUser = async (data: any): Promise<User | null> => {
-  // console.log(data);
-  const result = await db.user.findUnique({
+  const result = await db.user.findFirst({
     where: {
-      user_email_phone_username: {
-        userName: data.userName,
-        phone: parseInt(data.phone.toString()),
-        email: data.email,
-      },
+      OR: [{ email: data.email }, { userName: data.userName }],
     },
   });
-  // console.log(result);
   return result;
 };
 
