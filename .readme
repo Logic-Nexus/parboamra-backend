@@ -58,4 +58,4 @@ $ prisma migrate status --schema=./schema.prisma
 
 ---
 
-npx prisma migrate reset
+npx prisma migrate reset ///to revert migration and delete tables from database and sync schema with database and create tables in database again with new changes in schema file

@@ -45,6 +45,7 @@ function getAuthors() {
       lastName: "Doee",
       password: "12346",
       role: "ADMIN",
+      code: "123456",
       profile: {
         bio: "I am a software engineer",
         image: "https://i.pravatar.cc/300",
@@ -72,6 +73,7 @@ async function seed() {
           lastName: author.lastName,
           password: author.password,
           role: author.role as Role,
+          code: author.code,
           profile: {
             create: {
               bio: author.profile.bio,

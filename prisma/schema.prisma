@@ -20,7 +20,7 @@ model User {
   role      Role?    @default(USER)
   profile   Profile?
 
-   @@unique(fields: [email, phone,userName], name: "user_email_phone_username")
+  @@unique(fields: [email, phone, userName], name: "user_email_phone_username")
 }
 
 model Profile {
