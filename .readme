@@ -19,7 +19,7 @@
 - npx prisma init --datasource-provider postgresql
 
 create migration -
-npx prisma migrate dev --name init 
+npx prisma migrate dev --name init
 
 ## run migration -
 

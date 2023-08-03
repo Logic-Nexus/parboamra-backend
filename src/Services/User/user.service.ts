@@ -10,13 +10,7 @@ export const getUserList = async () => {
       role: true,
       createdAt: true,
       updatedAt: true,
-      profile: {
-        select: {
-          bio: true,
-          image: true,
-          address: true,
-        },
-      },
+      profile: true,
     },
   });
   // console.log(result);
@@ -58,4 +52,14 @@ export const getUserProfile = async () => {
     },
   });
   return result;
+};
+
+//create user
+
+export const createUser = async (data: any) => {
+  // console.log(data);
+  //get form data value
+  // const { image } = data;
+  // console.log(data);
+  // const result = await db.user.create({
 };
