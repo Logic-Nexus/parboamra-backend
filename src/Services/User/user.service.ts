@@ -1,21 +1,17 @@
 import { User } from "@prisma/client";
 import { db } from "../../utils/db.server";
+import exclude from "../../Others/DataExcludeFunction/exclude";
+
+// Exclude keys from user
 
 export const getUserList = async () => {
   const result = await db.user.findMany({
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
+    include: {
       profile: true,
     },
   });
   // console.log(result);
-  return result;
+  return exclude(result, ["password"]);
 };
 
 export const getUserById = async (id: number) => {
@@ -23,36 +19,12 @@ export const getUserById = async (id: number) => {
     where: {
       id: id,
     },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
-      profile: {
-        select: {
-          bio: true,
-          image: true,
-          address: true,
-        },
-      },
+    include: {
+      profile: true,
     },
   });
   // console.log(result);
-  return result;
-};
-
-//get user profile
-
-export const getUserProfile = async () => {
-  const result = await db.profile.findMany({
-    include: {
-      user: true,
-    },
-  });
-  return result;
+  return exclude(result, ["password"]);
 };
 
 //findUser By Email
