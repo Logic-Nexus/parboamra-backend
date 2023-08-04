@@ -2,7 +2,7 @@
   "name": "postgres-sequlizer-docker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "prisma": {
     "seed": "node  --require esbuild-register prisma/seed.ts"
   },
@@ -25,7 +25,6 @@
     "express-validator": "^7.0.1",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.1",
-    "jwt-redis": "^7.0.3",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.0.1",
     "path": "^0.12.7",
@@ -47,6 +46,6 @@
     "typescript": "^5.1.6"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   }
 }

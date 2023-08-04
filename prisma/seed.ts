@@ -76,7 +76,6 @@ async function seed() {
           profile: {
             create: {
               bio: author.profile.bio,
-              image: author.profile.image,
               address: author.profile.address,
               district: author.profile.district,
               city: author.profile.city,
