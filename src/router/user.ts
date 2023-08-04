@@ -7,8 +7,12 @@ import {
   getUserById,
   createUserProfile,
   deleteUser,
+  updateUserProfileImage,
 } from "../Services/User/user.service";
-import { uploadMiddleware } from "../Others/File/fileUploadController";
+import {
+  fileUploadAndGetUrlFunc,
+  uploadMiddleware,
+} from "../Others/File/fileUploadController";
 import { verifyTokenMiddleware } from "../Others/JWT";
 
 export const userRouter = express.Router();
@@ -82,25 +86,51 @@ userRouter.get(
   }
 );
 
-//create user profile
+//create/update user profile
 userRouter.put(
-  "/profile",
+  "/profile/:userId",
+  verifyTokenMiddleware,
+  async (req: any, res) => {
+    // console.log(req);
+    const userId = parseInt(req.params.userId);
+    // console.log(userId);
+    try {
+      if (!userId)
+        return res.status(400).json({ message: "User Id is required" });
+
+      const data = {
+        ...req.body,
+        userId,
+      };
+      // console.log(data);
+      const userProfile = await createUserProfile(data);
+      // // console.log(users);
+      if (userProfile) {
+        return res.status(200).json(userProfile);
+      }
+    } catch (error: any) {
+      // console.log(error);
+      return res.status(500).json({ message: error });
+    }
+  }
+);
+
+//update user profile image
+userRouter.post(
+  "/profile-image",
   verifyTokenMiddleware,
   uploadMiddleware,
   async (req: any, res) => {
     try {
       if (!req.body.userId)
         return res.status(400).json({ message: "User Id is required" });
-
-      if (!req.fileUrl)
-        return res.status(400).json({ message: "Image is required" });
-
+      // console.log(req.fileUrl);
       const data = {
         ...req.body,
-        image: req?.fileUrl,
+        image: req.fileUrl,
       };
       // console.log(data);
-      const userProfile = await createUserProfile(data);
+      const userProfile = await updateUserProfileImage(data);
       // // console.log(users);
       if (userProfile) {
         return res.status(200).json(userProfile);

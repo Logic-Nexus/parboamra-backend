@@ -8,6 +8,7 @@ export const getUserList = async () => {
   const result = await db.user.findMany({
     include: {
       profile: true,
+      profileImages: true,
     },
   });
   // console.log(result);
@@ -21,12 +22,12 @@ export const getUserById = async (id: number) => {
     },
     include: {
       profile: true,
+      profileImages: true,
     },
   });
   // console.log(result);
   return result;
 };
-
 
 //findUser By Email
 export const findExistingUser = async (data: any): Promise<User | null> => {
@@ -53,7 +54,7 @@ export const createUserProfile = async (data: any) => {
     zipCode: data.zipCode,
     gender: data.gender,
     birthDate: isoBirthDate,
-    image: data.image,
+    // image: data.image,
   };
 
   const result = await db.profile.upsert({
@@ -62,17 +63,50 @@ export const createUserProfile = async (data: any) => {
     },
     update: {
       ...forUpdateOrCreate,
+      //also update user table
+      user: {
+        update: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+        },
+      },
     },
     create: {
-      ...forUpdateOrCreate,
+      userId: parseInt(data.userId.toString()),
+      ...(forUpdateOrCreate as any),
+    },
+    include: {
       user: {
-        connect: {
-          id: parseInt(data.userId.toString()),
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          userName: true,
         },
       },
     },
   });
 
+  // console.log(result);
+  return result;
+};
+
+//update user profile image
+export const updateUserProfileImage = async (data: any) => {
+  const result = await db.profileImage.upsert({
+    where: {
+      userId: parseInt(data.userId.toString()),
+    },
+    update: {
+      imageUrl : data.image,
+    },
+    create: {
+      userId: parseInt(data.userId.toString()),
+      imageUrl : data.image,
+      // profileId: parseInt(data.profileId.toString()),
+    },
+  });
   // console.log(result);
   return result;
 };

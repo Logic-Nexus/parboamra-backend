@@ -8,38 +8,55 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  phone     Int      @unique
-  firstName String?
-  lastName  String?
-  userName  String   @unique @db.VarChar(15)
-  password  String   @db.VarChar(200)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  role      Role?    @default(USER)
-  profile   Profile?
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  phone         Int           @unique
+  firstName     String?
+  lastName      String?
+  userName      String        @unique @db.VarChar(15)
+  password      String        @db.VarChar(200)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  role          Role?         @default(USER)
+  profile       Profile?
+  profileImages ProfileImage?
 
   @@unique(fields: [email, phone, userName], name: "user_email_phone_username")
 }
 
 model Profile {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  bio       String?   @db.VarChar(250)
-  image     String?
-  address   String    @db.VarChar(250)
-  district  String?   @db.VarChar(250)
-  city      String    @db.VarChar(250)
-  country   String?   @db.VarChar(250)
-  zipCode   String?   @db.VarChar(80)
-  gender    String?   @db.VarChar(80)
-  birthDate DateTime? @db.Date
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             Int           @id @default(autoincrement())
+  userId         Int           @unique
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  bio            String?       @db.VarChar(250)
+  address        String        @db.VarChar(250)
+  district       String?       @db.VarChar(250)
+  city           String        @db.VarChar(250)
+  country        String?       @db.VarChar(250)
+  zipCode        String?       @db.VarChar(80)
+  gender         String?       @db.VarChar(80)
+  birthDate      DateTime?     @db.Date
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, address], map: "user_address")
+}
+
+//model for profileImage table
+model ProfileImage {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imageUrl  String // Add the field to store the image URL
+
+  // Define the relations to User and Profile
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Foreign keys to link to User and Profile
+  userId    Int      @unique // Foreign key column (not marked as unique, so it's not required)
+  profileId Int? // Foreign key column (marked as nullable with ?) @unique @unique
+
+  @@index([userId, profileId], name: "user_profile_index")
 }
 
 enum Role {
