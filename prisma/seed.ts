@@ -45,6 +45,7 @@ function getAuthors() {
       lastName: "Doee",
       password: "12346",
       role: "ADMIN",
+      
       profile: {
         bio: "I am a software engineer",
         image: "https://i.pravatar.cc/300",
