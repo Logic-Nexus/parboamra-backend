@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { userRouter } from "./router/user";
 import { fileRouter } from "./Others/File/FileRouter";
 import { authRouter } from "./router/auth";
+import { teacherVerifyRouter } from "./router/teacherAcademicInfoRoute";
 dotenv.config();
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/media", express.static("uploadFile"));
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1", teacherVerifyRouter);
 app.use("/api/v1/file", fileRouter);
 app.use("/api/v1", authRouter);
 

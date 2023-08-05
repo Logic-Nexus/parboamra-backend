@@ -94,9 +94,9 @@ model AcademicQualification {
   nidORbirth_number String @db.VarChar(250)
   nidORbirth_image  String
 
-  completed_degree String? @db.VarChar(250)
+  completed_degree String?  @db.VarChar(250)
   status           Boolean? @default(false)
-  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   // Foreign keys to link to User and Profile
   userId Int @unique // Foreign key column (not marked as unique, so it's not required)
