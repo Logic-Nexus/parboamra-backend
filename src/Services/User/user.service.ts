@@ -9,9 +9,10 @@ export const getUserList = async () => {
     include: {
       profile: true,
       profileImages: true,
+      academicQualification: true,
     },
   });
-  // console.log(result);
+
   return result.map((user) => exclude(user, ["password"]));
 };
 
@@ -23,6 +24,7 @@ export const getUserById = async (id: number) => {
     include: {
       profile: true,
       profileImages: true,
+      academicQualification: true,
     },
   });
   // console.log(result);
@@ -99,11 +101,11 @@ export const updateUserProfileImage = async (data: any) => {
       userId: parseInt(data.userId.toString()),
     },
     update: {
-      imageUrl : data.image,
+      imageUrl: data.image,
     },
     create: {
       userId: parseInt(data.userId.toString()),
-      imageUrl : data.image,
+      imageUrl: data.image,
       // profileId: parseInt(data.profileId.toString()),
     },
   });
@@ -119,6 +121,12 @@ export const deleteUser = async (id: number) => {
       id: id,
     },
   });
+  // console.log(result);
+  return result;
+};
+
+export const deleteAllUsers = async () => {
+  const result = await db.user.deleteMany();
   // console.log(result);
   return result;
 };

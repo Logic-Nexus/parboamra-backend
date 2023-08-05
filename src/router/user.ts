@@ -8,6 +8,7 @@ import {
   createUserProfile,
   deleteUser,
   updateUserProfileImage,
+  deleteAllUsers,
 } from "../Services/User/user.service";
 import {
   fileUploadAndGetUrlFunc,
@@ -34,7 +35,7 @@ userRouter.get(
     try {
       const users = await getUserList();
       // console.log(users);
-      if (users.length > 0) {
+      if (users) {
         return res.status(200).json(users);
       } else {
         return res.status(404).json({ message: "No user found" });
@@ -158,6 +159,22 @@ userRouter.delete(
         }
       } else {
         return res.status(404).json({ message: "Not Found" });
+      }
+    } catch (error: any) {
+      return res.status(400).json({ message: "Bad Request" });
+    }
+  }
+);
+
+//delete all users
+userRouter.delete(
+  "/",
+
+  async (req: Request, res: Response) => {
+    try {
+      const deletedUser = await deleteAllUsers();
+      if (deletedUser) {
+        return res.status(200).json({ message: "All Users Deleted" });
       }
     } catch (error: any) {
       return res.status(400).json({ message: "Bad Request" });

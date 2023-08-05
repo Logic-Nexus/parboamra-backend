@@ -36,7 +36,7 @@ authRouter.post("/register", async (req: Request, res: Response) => {
       return res.status(200).json({ message: "User created successfully" });
     }
   } catch (error: any) {
-    return res.status(500).json(error?.meta);
+    return res.status(500).json(error);
   }
 });
 

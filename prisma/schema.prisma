@@ -8,36 +8,41 @@ datasource db {
 }
 
 model User {
-  id            Int           @id @default(autoincrement())
-  email         String        @unique
-  phone         Int           @unique
-  firstName     String?
-  lastName      String?
-  userName      String        @unique @db.VarChar(15)
-  password      String        @db.VarChar(200)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  role          Role?         @default(USER)
-  profile       Profile?
-  profileImages ProfileImage?
+  id                Int      @id @default(autoincrement())
+  email             String   @unique
+  phone             Int      @unique
+  firstName         String?
+  lastName          String?
+  userName          String   @unique @db.VarChar(15)
+  password          String   @db.VarChar(200)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  role              Role?    @default(USER)
+  isEmailVerified   Boolean? @default(false)
+  isPhoneVerified   Boolean? @default(false)
+  isProfileVerified Boolean? @default(false)
+
+  profile               Profile?
+  profileImages         ProfileImage?
+  academicQualification AcademicQualification?
 
   @@unique(fields: [email, phone, userName], name: "user_email_phone_username")
 }
 
 model Profile {
-  id             Int           @id @default(autoincrement())
-  userId         Int           @unique
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  bio            String?       @db.VarChar(250)
-  address        String        @db.VarChar(250)
-  district       String?       @db.VarChar(250)
-  city           String        @db.VarChar(250)
-  country        String?       @db.VarChar(250)
-  zipCode        String?       @db.VarChar(80)
-  gender         String?       @db.VarChar(80)
-  birthDate      DateTime?     @db.Date
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bio       String?   @db.VarChar(250)
+  address   String    @db.VarChar(250)
+  district  String?   @db.VarChar(250)
+  city      String    @db.VarChar(250)
+  country   String?   @db.VarChar(250)
+  zipCode   String?   @db.VarChar(80)
+  gender    String?   @db.VarChar(80)
+  birthDate DateTime? @db.Date
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId, address], map: "user_address")
 }
@@ -53,14 +58,54 @@ model ProfileImage {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   // Foreign keys to link to User and Profile
-  userId    Int      @unique // Foreign key column (not marked as unique, so it's not required)
+  userId    Int  @unique // Foreign key column (not marked as unique, so it's not required)
   profileId Int? // Foreign key column (marked as nullable with ?) @unique @unique
 
   @@index([userId, profileId], name: "user_profile_index")
 }
 
+model AcademicQualification {
+  id                   Int      @id @default(autoincrement())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  education_background String   @db.VarChar(250)
+
+  ssc_result       String    @db.VarChar(250)
+  ssc_board        String?   @db.VarChar(250)
+  ssc_passing_year DateTime? @db.Date
+  ssc_institute    String?   @db.VarChar(250)
+  ssc_group        String    @db.VarChar(250)
+  ssc_certificate  String
+
+  hsc_result       String    @db.VarChar(250)
+  hsc_board        String?   @db.VarChar(250)
+  hsc_passing_year DateTime? @db.Date
+  hsc_institute    String?   @db.VarChar(250)
+  hsc_group        String    @db.VarChar(250)
+  hsc_certificate  String
+
+  running_degree       String    @db.VarChar(250)
+  running_institute    String    @db.VarChar(250)
+  running_subject      String    @db.VarChar(250)
+  running_passing_year DateTime? @db.Date
+  running_semester     String?   @db.VarChar(250)
+  running_cgpa         String?   @db.VarChar(250)
+
+  nidORbirth_number String @db.VarChar(250)
+  nidORbirth_image  String
+
+  completed_degree String? @db.VarChar(250)
+  status           Boolean? @default(false)
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  // Foreign keys to link to User and Profile
+  userId Int @unique // Foreign key column (not marked as unique, so it's not required)
+
+  @@index([userId], name: "user_academic_index")
+}
+
 enum Role {
   USER
-  TEACHER
+  TUTOR
   ADMIN
 }
