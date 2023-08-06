@@ -76,10 +76,10 @@ export const createTeacherAcademicQualification = async (body: any) => {
   return result;
 };
 
-export const getTeacherAcademicQualificationVerify = async () => {
+export const getTeacherAcademicQualificationVerify = async (status: any) => {
   const result = await db.academicQualification.findMany({
     where: {
-      status: "PENDING",
+      status: status?.toUpperCase() || "PENDING",
     },
     include: {
       user: {
@@ -100,11 +100,13 @@ export const getTeacherAcademicQualificationVerify = async () => {
 };
 
 export const getTeacherAcademicQualificationOwnVerifyData = async (
-  id: number
+  id: number,
+  status: any
 ) => {
   const result = await db.academicQualification.findUnique({
     where: {
       userId: parseInt(id.toString()),
+      status: status?.toUpperCase() || "PENDING",
     },
   });
   return result;
@@ -119,12 +121,19 @@ export const updateTeacherAcademicQualificationVerify = async (
       userId: parseInt(userId.toString()),
     },
     data: {
-      status: status,
+      status: status?.toUpperCase(),
       user: {
         update: {
-          isProfileVerified: status,
+          isProfileVerified: status?.toUpperCase(),
         },
       },
+    },
+    select: {
+      status: true,
+      id: true,
+      userId: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
   return result;

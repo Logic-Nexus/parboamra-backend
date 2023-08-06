@@ -60,17 +60,19 @@ teacherVerifyRouter.get(
   async (req: Request, res: Response) => {
     try {
       const { user } = req as any;
+      const { status } = req.query;
       // console.log(user.role);
       if (user.role !== "ADMIN" && user.role !== "TUTOR") {
         return res.status(400).json({ message: "You have no permission" });
       }
       if (user.role === "TUTOR") {
         const result = await getTeacherAcademicQualificationOwnVerifyData(
-          user?.id
+          user?.id,
+          status
         );
         return res.status(200).json(result);
       }
-      const result = await getTeacherAcademicQualificationVerify();
+      const result = await getTeacherAcademicQualificationVerify(status);
       return res.status(200).json(result);
     } catch (error: any) {
       return res.status(500).json({ message: error });
@@ -92,6 +94,7 @@ teacherVerifyRouter.put(
       }
       const userId = parseInt(req.params.userId);
       const { status } = req.body;
+      // console.log(req.body);
       const result = await updateTeacherAcademicQualificationVerify(
         userId,
         status
