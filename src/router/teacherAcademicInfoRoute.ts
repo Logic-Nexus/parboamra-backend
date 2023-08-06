@@ -2,7 +2,12 @@ import express from "express";
 import type { Request, Response } from "express";
 import { uploadMiddleware } from "../Others/File/fileUploadController";
 import { verifyTokenMiddleware } from "../Others/JWT";
-import { createTeacherAcademicQualification } from "../Services/TeacherVerify/teacherVerify.service";
+import {
+  createTeacherAcademicQualification,
+  getTeacherAcademicQualificationOwnVerifyData,
+  getTeacherAcademicQualificationVerify,
+  updateTeacherAcademicQualificationVerify,
+} from "../Services/TeacherVerify/teacherVerify.service";
 
 export const teacherVerifyRouter = express.Router();
 
@@ -13,30 +18,86 @@ teacherVerifyRouter.post(
   verifyTokenMiddleware,
   uploadMiddleware,
   async (req: Request, res: Response) => {
-    const { fileUrl } = req as any;
+    const { fileUrl, user } = req as any;
 
     try {
+      if (user.role !== "TUTOR" && user.role !== "ADMIN") {
+        return res.status(400).json({ message: "You have no permission" });
+      }
+
       if (!req.body.userId) {
-        return res.status(400).json({ message: "User Id is required" });
+        return res.status(400).json({
+          message: "You have to provide your identification id",
+        });
       }
 
       const data = {
         ...req.body,
-       
       } as any;
       for (let i = 0; i < fileUrl.length; i++) {
         data[fileUrl[i].fieldname] = fileUrl[i].path;
       }
       //   console.log(data);
-      const user = await createTeacherAcademicQualification(data);
-      console.log(user);
-      if (user) {
-        return res.status(200).json(user);
+      const result = await createTeacherAcademicQualification(data);
+      console.log(result);
+      if (result) {
+        return res.status(200).json(result);
       } else {
         return res.status(404).json({ message: "Not Found" });
       }
     } catch (error: any) {
       console.log(error);
+      return res.status(500).json({ message: error });
+    }
+  }
+);
+
+//GET /api/v1/teacher_profile_verification/pending
+teacherVerifyRouter.get(
+  "/teacher_profile_verification",
+  verifyTokenMiddleware,
+
+  async (req: Request, res: Response) => {
+    try {
+      const { user } = req as any;
+      // console.log(user.role);
+      if (user.role !== "ADMIN" && user.role !== "TUTOR") {
+        return res.status(400).json({ message: "You have no permission" });
+      }
+      if (user.role === "TUTOR") {
+        const result = await getTeacherAcademicQualificationOwnVerifyData(
+          user?.id
+        );
+        return res.status(200).json(result);
+      }
+      const result = await getTeacherAcademicQualificationVerify();
+      return res.status(200).json(result);
+    } catch (error: any) {
+      return res.status(500).json({ message: error });
+    }
+  }
+);
+
+//UPDATE /api/v1/teacher_profile_verification/:userId
+//admin can update teacher profile verification to APPROVED or REJECTED
+
+teacherVerifyRouter.put(
+  "/teacher_profile_verification/:userId",
+  verifyTokenMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { user } = req as any;
+      if (user.role !== "ADMIN") {
+        return res.status(400).json({ message: "You have no permission" });
+      }
+      const userId = parseInt(req.params.userId);
+      const { status } = req.body;
+      const result = await updateTeacherAcademicQualificationVerify(
+        userId,
+        status
+      );
+      return res.status(200).json(result);
+    } catch (error: any) {
       return res.status(500).json({ message: error });
     }
   }

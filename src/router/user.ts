@@ -25,12 +25,12 @@ userRouter.get(
   verifyTokenMiddleware,
   async (req: Request, res: Response) => {
     //permission check
-    // const { user } = req as any;
+    const { user } = req as any;
     // console.log(user);
 
-    // if (user.role === "ADMIN") {
-    //   return res.status(401).json({ message: "You have no permission" });
-    // }
+    if (user.role !== "ADMIN") {
+      return res.status(400).json({ message: "You have no permission" });
+    }
 
     try {
       const users = await getUserList();
@@ -66,6 +66,7 @@ userRouter.get(
     }
   }
 );
+
 
 //get onlY user profile
 userRouter.get(

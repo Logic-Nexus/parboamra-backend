@@ -20,7 +20,7 @@ model User {
   role              Role?    @default(USER)
   isEmailVerified   Boolean? @default(false)
   isPhoneVerified   Boolean? @default(false)
-  isProfileVerified Boolean? @default(false)
+  isProfileVerified Status?  @default(PENDING)
 
   profile               Profile?
   profileImages         ProfileImage?
@@ -94,9 +94,9 @@ model AcademicQualification {
   nidORbirth_number String @db.VarChar(250)
   nidORbirth_image  String
 
-  completed_degree String?  @db.VarChar(250)
-  status           Boolean? @default(false)
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  completed_degree String? @db.VarChar(250)
+  status           Status? @default(PENDING)
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   // Foreign keys to link to User and Profile
   userId Int @unique // Foreign key column (not marked as unique, so it's not required)
@@ -108,4 +108,10 @@ enum Role {
   USER
   TUTOR
   ADMIN
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
 }

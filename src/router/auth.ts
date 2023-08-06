@@ -61,6 +61,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     return res.status(200).json({
       accessToken: token,
       isLogin: true,
+      user: rest,
     });
   } catch (error: any) {
     return res.status(500).json(error);

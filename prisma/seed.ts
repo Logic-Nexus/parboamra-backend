@@ -148,6 +148,7 @@ async function seed() {
               nidORbirth_number: "123456789",
               nidORbirth_image: "nidORbirth_image",
               completed_degree: "BSc in CSE",
+              status: "PENDING",
             },
           },
         },

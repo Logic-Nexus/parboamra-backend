@@ -42,7 +42,7 @@ import { db } from "../../utils/db.server";
 //   }
 //create academicQualification
 export const createTeacherAcademicQualification = async (body: any) => {
-//   console.log(body);
+  //   console.log(body);
 
   const result = await db.academicQualification.create({
     data: {
@@ -68,10 +68,64 @@ export const createTeacherAcademicQualification = async (body: any) => {
       nidORbirth_number: body.nidORbirth_number,
       nidORbirth_image: body.nidORbirth_image,
       completed_degree: body.completed_degree,
-      status: JSON.parse(body.status),
+      status: body.status,
       userId: parseInt(body.userId.toString()),
     },
   });
   console.log(result);
+  return result;
+};
+
+export const getTeacherAcademicQualificationVerify = async () => {
+  const result = await db.academicQualification.findMany({
+    where: {
+      status: "PENDING",
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          userName: true,
+          isEmailVerified: true,
+          isPhoneVerified: true,
+          phone: true,
+        },
+      },
+    },
+  });
+  return result;
+};
+
+export const getTeacherAcademicQualificationOwnVerifyData = async (
+  id: number
+) => {
+  const result = await db.academicQualification.findUnique({
+    where: {
+      userId: parseInt(id.toString()),
+    },
+  });
+  return result;
+};
+
+export const updateTeacherAcademicQualificationVerify = async (
+  userId: number,
+  status: any
+) => {
+  const result = await db.academicQualification.update({
+    where: {
+      userId: parseInt(userId.toString()),
+    },
+    data: {
+      status: status,
+      user: {
+        update: {
+          isProfileVerified: status,
+        },
+      },
+    },
+  });
   return result;
 };

@@ -17,9 +17,10 @@ export const getUserList = async () => {
 };
 
 export const getUserById = async (id: number) => {
+  // console.log(id);
   const result = await db.user.findUnique({
     where: {
-      id: id,
+      id: parseInt(id.toString()),
     },
     include: {
       profile: true,
