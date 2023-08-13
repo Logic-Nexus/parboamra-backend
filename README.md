@@ -40,7 +40,7 @@ npx prisma migrate deploy
 - npm i express-validator
 
 Create a migration from changes in Prisma schema, apply it to the database, trigger generators (e.g. Prisma Client)
-$ prisma migrate dev
+$ npx prisma migrate dev
 
 Reset your database and apply all migrations
 $ prisma migrate reset
