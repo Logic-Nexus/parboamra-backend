@@ -1,5 +1,8 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('USER', 'TEACHER', 'ADMIN');
+CREATE TYPE "Role" AS ENUM ('USER', 'TUTOR', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -13,6 +16,9 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "role" "Role" DEFAULT 'USER',
+    "isEmailVerified" BOOLEAN DEFAULT false,
+    "isPhoneVerified" BOOLEAN DEFAULT false,
+    "isProfileVerified" "Status" DEFAULT 'PENDING',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -47,6 +53,39 @@ CREATE TABLE "ProfileImage" (
     CONSTRAINT "ProfileImage_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "AcademicQualification" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "education_background" VARCHAR(250) NOT NULL,
+    "ssc_result" VARCHAR(250) NOT NULL,
+    "ssc_board" VARCHAR(250),
+    "ssc_passing_year" DATE,
+    "ssc_institute" VARCHAR(250),
+    "ssc_group" VARCHAR(250) NOT NULL,
+    "ssc_certificate" TEXT NOT NULL,
+    "hsc_result" VARCHAR(250) NOT NULL,
+    "hsc_board" VARCHAR(250),
+    "hsc_passing_year" DATE,
+    "hsc_institute" VARCHAR(250),
+    "hsc_group" VARCHAR(250) NOT NULL,
+    "hsc_certificate" TEXT NOT NULL,
+    "running_degree" VARCHAR(250) NOT NULL,
+    "running_institute" VARCHAR(250) NOT NULL,
+    "running_subject" VARCHAR(250) NOT NULL,
+    "running_passing_year" DATE,
+    "running_semester" VARCHAR(250),
+    "running_cgpa" VARCHAR(250),
+    "nidORbirth_number" VARCHAR(250) NOT NULL,
+    "nidORbirth_image" TEXT NOT NULL,
+    "completed_degree" VARCHAR(250),
+    "status" "Status" DEFAULT 'PENDING',
+    "userId" INTEGER NOT NULL,
+
+    CONSTRAINT "AcademicQualification_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -71,8 +110,17 @@ CREATE UNIQUE INDEX "ProfileImage_userId_key" ON "ProfileImage"("userId");
 -- CreateIndex
 CREATE INDEX "user_profile_index" ON "ProfileImage"("userId", "profileId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "AcademicQualification_userId_key" ON "AcademicQualification"("userId");
+
+-- CreateIndex
+CREATE INDEX "user_academic_index" ON "AcademicQualification"("userId");
+
 -- AddForeignKey
 ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProfileImage" ADD CONSTRAINT "ProfileImage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AcademicQualification" ADD CONSTRAINT "AcademicQualification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
