@@ -2,36 +2,43 @@ import multer from "multer";
 import fs from "fs";
 // Multer Configuration
 
+let storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploadFile");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString().split("T")[0] + "-" + file.originalname);
+  },
+});
+
+export const upload = multer({ storage: storage });
+
 export const uploadMiddleware = (req: any, res: any, next: any) => {
-  const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {
-      fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
-    },
-  });
-  upload.single("attachment")(req, res, (err: any) => {
-    if (err) {
-      return res.status(400).json({ message: err });
+  const upload = multer({ storage: storage }).any();
+  upload(req, res, function (err: any) {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json({ message: err });
+    } else if (err) {
+      return res.status(500).json({ message: err });
     }
 
-    if (!req.file) {
-      return res.status(400).json({
-        message:
-          "File is required! If you don't have any file then send a JSON object with key 'attachment' and value 'null'.",
-      });
-    }
-
-    const { buffer, mimetype, originalname } = req?.file as any;
-    const fileName = `${originalname}-${Math.floor(
-      Math.random() * 100 * Date.now()
-    )}.${mimetype.split("/")[1]}`;
-
-    fs.writeFile(`uploadFile/${fileName}`, buffer, (err) => {
-      if (err) {
-        return res.status(400).json({ message: err.message });
-      }
+    // [{
+    //   fieldname: 'nidORbirth_image',
+    //   originalname: '1673576127630.jpeg',
+    //   encoding: '7bit',
+    //   mimetype: 'image/jpeg',
+    //   destination: 'uploadFile',
+    //   filename: '2023-08-05-1673576127630.jpeg',
+    //   path: 'uploadFile/2023-08-05-1673576127630.jpeg',
+    //   size: 85172
+    // }]
+    // send with field name and path
+    req.fileUrl = req.files.map((file: any) => {
+      return {
+        fieldname: file.fieldname,
+        path: `${process.env.LIVE_URL}/media/${file.filename}`,
+      };
     });
-    req.fileUrl = `${process.env.LIVE_URL}/media/${fileName}`; //
     next();
   });
 };
