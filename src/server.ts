@@ -9,7 +9,15 @@ import { teacherVerifyRouter } from "./router/teacherAcademicInfoRoute";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // allow to server to accept request from different origin
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // allow to accept request with different method
+    credentials: true, // allow session cookie from browser to pass through
+    optionsSuccessStatus: 200, // 
+    preflightContinue: false, // disable the default response
+  })
+);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
