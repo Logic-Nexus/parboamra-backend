@@ -24,7 +24,7 @@ export const registerUser = async (
       userName: data.userName,
       email: data.email,
       role: data.role,
-      phone: parseInt(data.phone.toString()),
+      phone: Number(data.phone),
       password: data.password,
     },
   });

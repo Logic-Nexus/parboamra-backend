@@ -67,7 +67,6 @@ userRouter.get(
   }
 );
 
-
 //get onlY user profile
 userRouter.get(
   "/profile/:id",
@@ -129,7 +128,7 @@ userRouter.post(
       // console.log(req.fileUrl);
       const data = {
         ...req.body,
-        image: req.fileUrl,
+        image: req.fileUrl?.[0],
       };
       // console.log(data);
       const userProfile = await updateUserProfileImage(data);

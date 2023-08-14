@@ -43,36 +43,44 @@ import { db } from "../../utils/db.server";
 //create academicQualification
 export const createTeacherAcademicQualification = async (body: any) => {
   //   console.log(body);
-
-  const result = await db.academicQualification.create({
-    data: {
-      education_background: body.education_background,
-      ssc_result: body.ssc_result,
-      ssc_board: body.ssc_board,
-      ssc_passing_year: convertIsoDate(body.ssc_passing_year),
-      ssc_institute: body.ssc_institute,
-      ssc_group: body.ssc_group,
-      ssc_certificate: body.ssc_certificate,
-      hsc_result: body.hsc_result,
-      hsc_board: body.hsc_board,
-      hsc_passing_year: convertIsoDate(body.hsc_passing_year),
-      hsc_institute: body.hsc_institute,
-      hsc_group: body.hsc_group,
-      hsc_certificate: body.hsc_certificate,
-      running_degree: body.running_degree,
-      running_institute: body.running_institute,
-      running_subject: body.running_subject,
-      running_passing_year: convertIsoDate(body.running_passing_year),
-      running_semester: body.running_semester,
-      running_cgpa: body.running_cgpa,
-      nidORbirth_number: body.nidORbirth_number,
-      nidORbirth_image: body.nidORbirth_image,
-      completed_degree: body.completed_degree,
-      status: body.status,
+  const updateOrInsert = {
+    education_background: body.education_background,
+    ssc_result: body.ssc_result,
+    ssc_board: body.ssc_board,
+    ssc_passing_year: convertIsoDate(body.ssc_passing_year),
+    ssc_institute: body.ssc_institute,
+    ssc_group: body.ssc_group,
+    ssc_certificate: body.ssc_certificate,
+    hsc_result: body.hsc_result,
+    hsc_board: body.hsc_board,
+    hsc_passing_year: convertIsoDate(body.hsc_passing_year),
+    hsc_institute: body.hsc_institute,
+    hsc_group: body.hsc_group,
+    hsc_certificate: body.hsc_certificate,
+    running_degree: body.running_degree,
+    running_institute: body.running_institute,
+    running_subject: body.running_subject,
+    running_passing_year: convertIsoDate(body.running_passing_year),
+    running_semester: body.running_semester,
+    running_cgpa: body.running_cgpa,
+    nidORbirth_number: body.nidORbirth_number,
+    nidORbirth_image: body.nidORbirth_image,
+    completed_degree: body.completed_degree,
+    status: body.status,
+  };
+  const result = await db.academicQualification.upsert({
+    where: {
+      userId: parseInt(body.userId.toString()),
+    },
+    update: {
+      ...updateOrInsert,
+    },
+    create: {
+      ...updateOrInsert,
       userId: parseInt(body.userId.toString()),
     },
   });
-  console.log(result);
+  // console.log(result);
   return result;
 };
 

@@ -34,12 +34,13 @@ teacherVerifyRouter.post(
       const data = {
         ...req.body,
       } as any;
+      
       for (let i = 0; i < fileUrl.length; i++) {
         data[fileUrl[i].fieldname] = fileUrl[i].path;
       }
       //   console.log(data);
       const result = await createTeacherAcademicQualification(data);
-      console.log(result);
+      // console.log(result);
       if (result) {
         return res.status(200).json(result);
       } else {
