@@ -128,8 +128,9 @@ userRouter.post(
       // console.log(req.fileUrl);
       const data = {
         ...req.body,
-        image: req.fileUrl?.[0],
+        attachment: req?.fileUrl?.[0]?.path
       };
+
       // console.log(data);
       const userProfile = await updateUserProfileImage(data);
       // // console.log(users);
