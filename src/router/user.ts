@@ -122,14 +122,18 @@ userRouter.post(
   verifyTokenMiddleware,
   uploadMiddleware,
   async (req: any, res) => {
+    const { fileUrl } = req as any;
     try {
       if (!req.body.userId)
         return res.status(400).json({ message: "User Id is required" });
       // console.log(req.fileUrl);
       const data = {
         ...req.body,
-        attachment: req?.fileUrl?.[0]?.path
       };
+
+      for (let i = 0; i < fileUrl.length; i++) {
+        data[fileUrl[i].fieldname] = fileUrl[i].path;
+      }
 
       // console.log(data);
       const userProfile = await updateUserProfileImage(data);

@@ -97,16 +97,17 @@ export const createUserProfile = async (data: any) => {
 
 //update user profile image
 export const updateUserProfileImage = async (data: any) => {
+  // console.log(data);
   const result = await db.profileImage.upsert({
     where: {
       userId: parseInt(data.userId.toString()),
     },
     update: {
-      imageUrl: data.image,
+      imageUrl: data.attachment,
     },
     create: {
       userId: parseInt(data.userId.toString()),
-      imageUrl: data.image,
+      imageUrl: data.attachment,
       // profileId: parseInt(data.profileId.toString()),
     },
   });
