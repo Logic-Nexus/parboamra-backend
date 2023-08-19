@@ -1,11 +1,13 @@
 import express from "express";
 import type { Request, Response } from "express";
-
+import otpGenerator from "otp-generator";
 // import { body, validationResult } from "express-validator";
 import { findExistingUser } from "../Services/User/user.service";
 import { registerUser } from "../Services/Auth/auth.service";
 import { comparePassword, hashPassword } from "../Others/SecurePassword";
 import { generateToken } from "../Others/JWT";
+import HTML_TEMPLATE from "../Others/mail/mail-template";
+import SENDMAIL from "../Others/mail/mail";
 
 export const authRouter = express.Router();
 
@@ -73,6 +75,33 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 authRouter.post("/logout", async (req: Request, res: Response) => {
   try {
     return res.status(200).json({ message: "User logged out successfully" });
+  } catch (error: any) {
+    return res.status(500).json(error);
+  }
+});
+
+//send mail
+
+authRouter.post("/sendmail", async (req: Request, res: Response) => {
+  try {
+    const otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const options = {
+      from: process.env.MAIL_USER, // sender address
+      to: "wahedemon09@gmail.com", // receiver email
+      subject: "Send email in Node.JS with Nodemailer using Gmail account", // Subject line
+      text: "Node.JS testing mail for OTP", // plain text body
+      html: HTML_TEMPLATE(otp), // html body
+    };
+    await SENDMAIL(options, (info) => {
+      if (info.accepted?.length > 0) {
+        return res.status(200).json({ message: "Mail sent successfully" });
+      } else {
+        return res.status(400).json({ message: "Mail not sent" });
+      }
+    });
   } catch (error: any) {
     return res.status(500).json(error);
   }
