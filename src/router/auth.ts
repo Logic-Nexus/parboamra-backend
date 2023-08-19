@@ -1,13 +1,17 @@
 import express from "express";
 import type { Request, Response } from "express";
-import otpGenerator from "otp-generator";
 // import { body, validationResult } from "express-validator";
 import { findExistingUser } from "../Services/User/user.service";
-import { registerUser } from "../Services/Auth/auth.service";
+import {
+  getOtpList,
+  registerUser,
+  resetPassword,
+  saveOtp,
+  verifyOtp,
+} from "../Services/Auth/auth.service";
 import { comparePassword, hashPassword } from "../Others/SecurePassword";
 import { generateToken } from "../Others/JWT";
-import HTML_TEMPLATE from "../Others/mail/mail-template";
-import SENDMAIL from "../Others/mail/mail";
+import sendOtpMiddleware from "../Others/mail";
 
 export const authRouter = express.Router();
 
@@ -60,6 +64,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     }
     const { password, createdAt, updatedAt, ...rest } = user;
     const token = await generateToken(rest);
+    // console
     return res.status(200).json({
       accessToken: token,
       isLogin: true,
@@ -82,26 +87,84 @@ authRouter.post("/logout", async (req: Request, res: Response) => {
 
 //send mail
 
-authRouter.post("/sendmail", async (req: Request, res: Response) => {
-  try {
-    const otp = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const options = {
-      from: process.env.MAIL_USER, // sender address
-      to: "wahedemon09@gmail.com", // receiver email
-      subject: "Send email in Node.JS with Nodemailer using Gmail account", // Subject line
-      text: "Node.JS testing mail for OTP", // plain text body
-      html: HTML_TEMPLATE(otp), // html body
-    };
-    await SENDMAIL(options, (info) => {
-      if (info.accepted?.length > 0) {
-        return res.status(200).json({ message: "Mail sent successfully" });
-      } else {
-        return res.status(400).json({ message: "Mail not sent" });
+authRouter.post(
+  "/resetPassword",
+  sendOtpMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { otpData } = req as any;
+      const { email } = req.body;
+      const data = {
+        email: email,
+        otp: otpData.otp,
+        usingFor: otpData?.usingFor,
+        expiresAt: otpData?.expiresAt,
+      };
+      const result = await saveOtp(data);
+      if (result) {
+        return res.status(200).json({
+          message:
+            "OTP sent to your email successfully. Your otp will expire in 3 minutes",
+          result,
+        });
       }
-    });
+    } catch (error: any) {
+      return res.status(500).json(error);
+    }
+  }
+);
+
+// get otpList
+
+authRouter.get("/otpList", async (req: Request, res: Response) => {
+  try {
+    const otpList = await getOtpList();
+    return res.status(200).json(otpList);
+  } catch (error: any) {
+    return res.status(500).json(error);
+  }
+});
+
+//verify otp
+
+authRouter.post("/verifyOtp", async (req: Request, res: Response) => {
+  try {
+    const { email, otp, usingFor } = req.body;
+
+    const body = {
+      email,
+      otp,
+      usingFor,
+    };
+
+    const otpData = (await verifyOtp(body)) as any;
+    // console.log(otpData);
+
+    if (!otpData) {
+      return res.status(400).json({ message: "User not found / Check usingFor" });
+    }
+    if (otpData.otp !== otp) {
+      return res.status(400).json({ message: "OTP does not match" });
+    }
+    if (otpData.expireAt < new Date()) {
+      return res.status(400).json({ message: "OTP expired.Try again" });
+    }
+
+    if (usingFor === "resetPassword") {
+      const { password } = req.body;
+      const newPassword = await hashPassword(password);
+
+      const data = {
+        email: email,
+        password: newPassword,
+      };
+      const result = await resetPassword(data);
+      if (result) {
+        return res
+          .status(200)
+          .json({ message: "Password reset successfully" });
+      }
+    }
   } catch (error: any) {
     return res.status(500).json(error);
   }

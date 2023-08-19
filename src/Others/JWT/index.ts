@@ -25,7 +25,7 @@ export const verifyToken = async (token: string) => {
 
 export const verifyTokenMiddleware = async (req: any, res: any, next: any) => {
   const BearerToken = req.headers.authorization;
-  const token = BearerToken?.split(" ")[1];
+  const token = BearerToken?.split(" ")?.[1];
 
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });

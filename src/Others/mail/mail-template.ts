@@ -19,7 +19,7 @@ const HTML_TEMPLATE = (text: any) => {
               padding: 20px;
             }
             .email-header {
-              background-color: #333;
+              background-color: #79155B;
               color: #fff;
               padding: 20px;
               text-align: center;
@@ -28,7 +28,7 @@ const HTML_TEMPLATE = (text: any) => {
               padding: 20px;
             }
             .email-footer {
-              background-color: #333;
+              background-color: #C23373;
               color: #fff;
               padding: 20px;
               text-align: center;
@@ -39,13 +39,13 @@ const HTML_TEMPLATE = (text: any) => {
           <div class="container">
             <div class="email">
               <div class="email-header">
-                <h1>EMAIL HEADER</h1>
+                <h1>Logic Nexus</h1>
               </div>
               <div class="email-body">
                 <p>${text}</p>
               </div>
               <div class="email-footer">
-                <p>EMAIL FOOTER</p>
+                <p>Logic Nexus &copy; ${new Date().getFullYear()}</p>
               </div>
             </div>
           </div>

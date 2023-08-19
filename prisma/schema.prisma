@@ -104,14 +104,15 @@ model AcademicQualification {
   @@index([userId], name: "user_academic_index")
 }
 
-
 //save register otp to database
 model RegisterOtp {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  otp       String   @db.VarChar(250)
-  email     String   @db.VarChar(250)
+  expireAt  DateTime @db.Timestamp(6)
+  otp       String   @db.VarChar(6)
+  email     String   @unique
+  usingFor  String?  @db.VarChar(250)
   status    Status?  @default(PENDING)
 }
 

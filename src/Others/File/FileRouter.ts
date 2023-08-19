@@ -12,7 +12,7 @@ const upload = multer({
 
 fileRouter.post("/", upload.single("attachment"), async (req, res) => {
   const { buffer, mimetype, originalname } = req.file as any;
-  const fileName = `${originalname}-${Date.now()}.${mimetype.split("/")[1]}`;
+  const fileName = `${originalname}-${Date.now()}.${mimetype?.split("/")[1]}`;
   try {
     fs.writeFile(`uploadFile/${fileName}`, buffer, (err) => {
       if (err) {
