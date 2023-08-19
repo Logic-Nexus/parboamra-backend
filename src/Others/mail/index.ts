@@ -17,7 +17,7 @@ const usingFor = (usingFor: string) => {
 const OTP_EXPIRATION_SECONDS = 3 * 60;
 
 // Example storage for OTPs and their expiration timestamps (in-memory storage, replace with a proper database)
-const otpStorage = {} as any;
+let otpStorage = {} as any;
 
 // Middleware to send OTP emails
 const sendOtpMiddleware = async (req: any, res: any, next: any) => {
@@ -32,8 +32,10 @@ const sendOtpMiddleware = async (req: any, res: any, next: any) => {
 
     if (!req.body.email)
       return res.status(400).json({ message: "Email is required" });
+
     if (typeof req.body.email !== "string")
       return res.status(400).json({ message: "Email must be a string" });
+
     if (!req.body.usingFor)
       return res.status(400).json({ message: "Using for is required" });
 
@@ -46,9 +48,10 @@ const sendOtpMiddleware = async (req: any, res: any, next: any) => {
     ) {
       // Reuse existing OTP if within the expiration window
       req.otpData = otpStorage[req.body.email];
-      // console.log("Reusing existing OTP:", otpStorage);
+      console.log("Reusing existing OTP:", otpStorage);
       return next();
     }
+    // console.log(otpStorage);
 
     const otp = generateOTP(); // Replace with your OTP generation logic
 
@@ -74,7 +77,7 @@ const sendOtpMiddleware = async (req: any, res: any, next: any) => {
           .status(500)
           .json({ message: `Failed to send OTP ${req.body.email}` });
       }
-      console.log("OTP email sent:", info.response);
+      console.log("OTP email sent:", info.response, otpData);
       otpStorage[req.body.email] = otpData;
       req.otpData = otpData;
       return next();
@@ -86,3 +89,34 @@ const sendOtpMiddleware = async (req: any, res: any, next: any) => {
 };
 
 export default sendOtpMiddleware;
+
+// send middleWare function for register
+//
+export const sendOtp = async (email: any) => {
+  // console.log(email);
+  try {
+    const otp = generateOTP();
+
+    const mailOptions = {
+      from: process.env.MAIL_USER, // sender address
+      to: email, // list of receivers
+      subject: "Verify Email", // Subject line
+      text: `Your OTP for Verify Email is ${otp}`, // plain text body
+      html: HTML_TEMPLATE(`Your OTP for Verify Email is ${otp}`), // html body
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    // console.log(result);
+    //  result?.response?.includes("OK");
+    if (result.response?.includes("OK")) {
+      return {
+        otp,
+        expiresAt: Date.now() + OTP_EXPIRATION_SECONDS * 1000,
+        usingFor: "verifyEmail",
+      };
+    }
+  } catch (error) {
+    console.error("Error generating OTP:", error);
+    return false;
+  }
+};

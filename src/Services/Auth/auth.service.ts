@@ -110,6 +110,32 @@ export const resetPassword = async (data: any) => {
   return result;
 };
 
+//update status of otp
+export const updateOtpStatus = async (email: any, status: any) => {
+  const result = await db.registerOtp.update({
+    where: {
+      email: email,
+    },
+    data: {
+      status: status,
+    },
+  });
+  return result;
+};
+
+//update user profile email verification status
+export const updateEmailVerificationStatus = async (email: any) => {
+  const result = await db.user.update({
+    where: {
+      email: email,
+    },
+    data: {
+      isEmailVerified: true,
+    },
+  });
+  return result;
+};
+
 // User OTP List
 export const getOtpList = async () => {
   const result = await db.registerOtp.findMany();
@@ -117,3 +143,8 @@ export const getOtpList = async () => {
 };
 
 
+//delete all otp
+export const deleteAllOtp = async () => {
+  const result = await db.registerOtp.deleteMany();
+  return result;
+}
