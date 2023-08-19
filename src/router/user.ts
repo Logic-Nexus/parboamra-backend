@@ -15,6 +15,7 @@ import {
   uploadMiddleware,
 } from "../Others/File/fileUploadController";
 import { verifyTokenMiddleware } from "../Others/JWT";
+import { deleteAllOtp } from "../Services/Auth/auth.service";
 
 export const userRouter = express.Router();
 
@@ -178,7 +179,8 @@ userRouter.delete(
   async (req: Request, res: Response) => {
     try {
       const deletedUser = await deleteAllUsers();
-      if (deletedUser) {
+      const deletedAllOtp = await deleteAllOtp();
+      if (deletedUser && deletedAllOtp) {
         return res.status(200).json({ message: "All Users Deleted" });
       }
     } catch (error: any) {
