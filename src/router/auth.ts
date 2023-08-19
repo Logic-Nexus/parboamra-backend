@@ -219,13 +219,16 @@ authRouter.post("/verifyEmail", async (req: Request, res: Response) => {
     }
 
     const otpData = (await sendOtp(email)) as any;
+
     const body = {
       email: email,
       otp: otpData?.otp,
       usingFor: otpData?.usingFor,
       expiresAt: otpData?.expiresAt,
     };
+
     const result = await saveOtp(body);
+
     if (otpData && result) {
       return res.status(200).json({
         message:
@@ -235,6 +238,7 @@ authRouter.post("/verifyEmail", async (req: Request, res: Response) => {
     } else {
       return res.status(400).json({ message: "Error sending OTP email" });
     }
+    
   } catch (error: any) {
     return res.status(500).json(error);
   }
