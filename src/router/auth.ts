@@ -90,7 +90,10 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     return res.status(200).json({
       accessToken: token,
       isLogin: true,
-      user: rest,
+      user: {
+        ...rest,
+        isEmailVerified: isEmailVerified,
+      },
     });
   } catch (error: any) {
     return res.status(500).json(error);
@@ -238,7 +241,6 @@ authRouter.post("/verifyEmail", async (req: Request, res: Response) => {
     } else {
       return res.status(400).json({ message: "Error sending OTP email" });
     }
-    
   } catch (error: any) {
     return res.status(500).json(error);
   }

@@ -34,7 +34,7 @@ teacherVerifyRouter.post(
       const data = {
         ...req.body,
       } as any;
-      
+
       for (let i = 0; i < fileUrl.length; i++) {
         data[fileUrl[i].fieldname] = fileUrl[i].path;
       }
@@ -73,7 +73,13 @@ teacherVerifyRouter.get(
         );
         return res.status(200).json(result);
       }
-      const result = await getTeacherAcademicQualificationVerify(status);
+      const { pageNumber, perPageValue } = req.query;
+
+      const result = await getTeacherAcademicQualificationVerify(
+        status,
+        pageNumber,
+        perPageValue
+      );
       return res.status(200).json(result);
     } catch (error: any) {
       return res.status(500).json({ message: error });

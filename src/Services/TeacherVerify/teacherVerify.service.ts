@@ -1,4 +1,5 @@
 import { convertIsoDate } from "../../Others/DateConvertIso";
+import { paginationCustomResult } from "../../Others/paginationCustomResult";
 import { db } from "../../utils/db.server";
 
 // model AcademicQualification {
@@ -84,8 +85,17 @@ export const createTeacherAcademicQualification = async (body: any) => {
   return result;
 };
 
-export const getTeacherAcademicQualificationVerify = async (status: any) => {
+export const getTeacherAcademicQualificationVerify = async (
+  status: any,
+  page: any,
+  perPage: any
+) => {
+  const pageNumbers = page ? parseInt(page.toString()) : 1;
+  const resultPerPage = perPage ? parseInt(perPage.toString()) : 10;
+
   const result = await db.academicQualification.findMany({
+    skip: (pageNumbers - 1) * resultPerPage,
+    take: resultPerPage,
     where: {
       status: status?.toUpperCase() || "PENDING",
     },
@@ -104,7 +114,13 @@ export const getTeacherAcademicQualificationVerify = async (status: any) => {
       },
     },
   });
-  return result;
+
+  const res = paginationCustomResult({
+    pageNumbers,
+    resultPerPage,
+    result,
+  });
+  return res;
 };
 
 export const getTeacherAcademicQualificationOwnVerifyData = async (
