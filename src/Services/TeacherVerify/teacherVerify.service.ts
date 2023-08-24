@@ -109,15 +109,22 @@ export const getTeacherAcademicQualificationVerify = async (
           userName: true,
           isEmailVerified: true,
           isPhoneVerified: true,
+          profileVerifyRejectReason: true,
           phone: true,
         },
       },
     },
   });
 
+  const totalResultCount = await db.academicQualification.count({
+    where: {
+      status: status?.toUpperCase() || "PENDING",
+    },
+  });
   const res = paginationCustomResult({
     pageNumbers,
     resultPerPage,
+    totalResultCount,
     result,
   });
   return res;
@@ -138,7 +145,8 @@ export const getTeacherAcademicQualificationOwnVerifyData = async (
 
 export const updateTeacherAcademicQualificationVerify = async (
   userId: number,
-  status: any
+  status: any,
+  rejectReason: any
 ) => {
   const result = await db.academicQualification.update({
     where: {
@@ -149,6 +157,7 @@ export const updateTeacherAcademicQualificationVerify = async (
       user: {
         update: {
           isProfileVerified: status?.toUpperCase(),
+          profileVerifyRejectReason: rejectReason,
         },
       },
     },
