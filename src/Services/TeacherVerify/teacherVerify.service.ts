@@ -167,6 +167,11 @@ export const updateTeacherAcademicQualificationVerify = async (
       userId: true,
       createdAt: true,
       updatedAt: true,
+      user: {
+        select: {
+          profileVerifyRejectReason: true,
+        },
+      },
     },
   });
   return result;
