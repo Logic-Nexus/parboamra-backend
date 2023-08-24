@@ -52,7 +52,7 @@ export const loginUser = async (data: any) => {
           userName: data.userName,
         },
         {
-          phone: Number(data.phone) || undefined,
+          phone: Number(data?.phone) || undefined,
         },
       ],
       password: data.password,

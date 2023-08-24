@@ -39,7 +39,7 @@ export const findExistingUser = async (data: any): Promise<User | null> => {
       OR: [
         { email: data.email },
         { userName: data.userName },
-        { phone: Number(data.phone) },
+        { phone: Number(data?.phone) || undefined },
       ],
     },
   });
