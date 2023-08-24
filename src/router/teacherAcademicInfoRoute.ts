@@ -4,6 +4,7 @@ import { uploadMiddleware } from "../Others/File/fileUploadController";
 import { verifyTokenMiddleware } from "../Others/JWT";
 import {
   createTeacherAcademicQualification,
+  getAllTeacherList,
   getTeacherAcademicQualificationOwnVerifyData,
   getTeacherAcademicQualificationVerify,
   updateTeacherAcademicQualificationVerify,
@@ -109,6 +110,40 @@ teacherVerifyRouter.put(
       );
       return res.status(200).json(result);
     } catch (error: any) {
+      return res.status(500).json({ message: error });
+    }
+  }
+);
+
+//get all teachers list
+
+teacherVerifyRouter.get(
+  "/tutor-list",
+  verifyTokenMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const { user } = req as any;
+      if (user.role !== "ADMIN") {
+        return res.status(400).json({ message: "You have no permission" });
+      }
+      const { pageNumber, perPageValue } = req.query;
+
+      const queryData = {
+        email: req.query.email,
+        phone: req.query.phone,
+        userName: req.query.userName,
+        isProfileVerified: req.query.isProfileVerified || "APPROVED",
+        role: "TUTOR"
+      } as any;
+
+      const result = await getAllTeacherList(
+        pageNumber,
+        perPageValue,
+        queryData
+      );
+      return res.status(200).json(result);
+    } catch (error: any) {
+      // console.log(error);
       return res.status(500).json({ message: error });
     }
   }

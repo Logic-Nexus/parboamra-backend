@@ -36,7 +36,11 @@ export const getUserById = async (id: number) => {
 export const findExistingUser = async (data: any): Promise<User | null> => {
   const result = await db.user.findFirst({
     where: {
-      OR: [{ email: data.email }, { userName: data.userName }],
+      OR: [
+        { email: data.email },
+        { userName: data.userName },
+        { phone: Number(data.phone) },
+      ],
     },
   });
   return result;

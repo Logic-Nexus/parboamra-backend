@@ -1,3 +1,4 @@
+import exclude from "../../Others/DataExcludeFunction/exclude";
 import { convertIsoDate } from "../../Others/DateConvertIso";
 import { paginationCustomResult } from "../../Others/paginationCustomResult";
 import { db } from "../../utils/db.server";
@@ -175,4 +176,58 @@ export const updateTeacherAcademicQualificationVerify = async (
     },
   });
   return result;
+};
+
+export const getAllTeacherList = async (
+  page: any,
+  perPage: any,
+  queryData: {
+    email: any;
+    phone: any;
+    userName: any;
+    isProfileVerified: any;
+    role: any;
+  }
+) => {
+  const pageNumbers = page ? parseInt(page.toString()) : 1;
+  const resultPerPage = perPage ? parseInt(perPage.toString()) : 10;
+
+  const result = await db.user.findMany({
+    skip: (pageNumbers - 1) * resultPerPage,
+    take: resultPerPage,
+
+    where: {
+      email: queryData.email,
+      phone: Number(queryData.phone) || undefined,
+      userName: queryData.userName,
+      isProfileVerified: queryData.isProfileVerified.toUpperCase(),
+      role: queryData.role,
+    },
+
+    include: {
+      profile: true,
+      profileImages: true,
+      academicQualification: true,
+    },
+  });
+
+  // console.log(result);
+  const totalResultCount = await db.user.count({
+    where: {
+      email: queryData.email,
+      phone: Number(queryData.phone) || undefined,
+      userName: queryData.userName,
+      isProfileVerified: queryData.isProfileVerified.toUpperCase(),
+      role: queryData.role,
+    },
+  });
+
+  const res = paginationCustomResult({
+    pageNumbers,
+    resultPerPage,
+    totalResultCount,
+    result,
+  });
+  const val = res.results?.map((user: any) => exclude(user, ["password"]));
+  return { ...res, results: val };
 };

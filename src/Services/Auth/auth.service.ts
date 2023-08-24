@@ -51,6 +51,9 @@ export const loginUser = async (data: any) => {
         {
           userName: data.userName,
         },
+        {
+          phone: Number(data.phone),
+        }
       ],
       password: data.password,
     },
