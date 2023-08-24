@@ -100,11 +100,12 @@ teacherVerifyRouter.put(
         return res.status(400).json({ message: "You have no permission" });
       }
       const userId = parseInt(req.params.userId);
-      const { status } = req.body;
+      const { status, rejectReason } = req.body;
       // console.log(req.body);
       const result = await updateTeacherAcademicQualificationVerify(
         userId,
-        status
+        status,
+        rejectReason
       );
       return res.status(200).json(result);
     } catch (error: any) {
