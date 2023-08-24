@@ -52,8 +52,8 @@ export const loginUser = async (data: any) => {
           userName: data.userName,
         },
         {
-          phone: Number(data.phone),
-        }
+          phone: Number(data.phone) || undefined,
+        },
       ],
       password: data.password,
     },
@@ -145,9 +145,8 @@ export const getOtpList = async () => {
   return result;
 };
 
-
 //delete all otp
 export const deleteAllOtp = async () => {
   const result = await db.registerOtp.deleteMany();
   return result;
-}
+};
