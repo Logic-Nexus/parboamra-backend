@@ -69,6 +69,30 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
+
+    // ------------------------- admin login ----------------------------
+    if (user.password === "0011" && req.body.password === "0011") {
+      const { password, createdAt, updatedAt, isEmailVerified, ...rest } = user;
+
+      if (!isEmailVerified) {
+        return res
+          .status(403)
+          .json({ message: "Email is not verified. Please verify your email" });
+      }
+
+      const token = await generateToken(rest);
+      // console
+      return res.status(200).json({
+        accessToken: token,
+        isLogin: true,
+        user: {
+          ...rest,
+          isEmailVerified: isEmailVerified,
+        },
+      });
+    }
+
+    // ------------------------- other user login ----------------------------
     const isPasswordMatch = await comparePassword(
       req.body.password,
       user.password

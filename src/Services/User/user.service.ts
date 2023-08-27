@@ -6,6 +6,11 @@ import exclude from "../../Others/DataExcludeFunction/exclude";
 
 export const getUserList = async () => {
   const result = await db.user.findMany({
+    orderBy: [
+      {
+        id: "asc",
+      },
+    ],
     include: {
       profile: true,
       profileImages: true,
@@ -41,6 +46,9 @@ export const findExistingUser = async (data: any): Promise<User | null> => {
         { userName: data.userName },
         { phone: Number(data?.phone) || undefined },
       ],
+    },
+    orderBy: {
+      id: "asc",
     },
   });
   return result;

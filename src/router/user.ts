@@ -149,6 +149,26 @@ userRouter.post(
   }
 );
 
+//get users username list
+userRouter.get(
+  "/usernameList",
+  verifyTokenMiddleware,
+  async (req: Request, res: Response) => {
+    try {
+      const users = await getUserList();
+      // console.log(users);
+      if (users) {
+        const usernameList = users.map((user: any) => user?.userName);
+        return res.status(200).json(usernameList);
+      } else {
+        return res.status(404).json({ message: "No user found" });
+      }
+    } catch (error: any) {
+      return res.status(500).json({ message: error });
+    }
+  }
+);
+
 // delete user
 userRouter.delete(
   "/:id",
