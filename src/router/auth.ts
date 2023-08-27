@@ -81,7 +81,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
 
     if (!isEmailVerified) {
       return res
-        .status(400)
+        .status(403)
         .json({ message: "Email is not verified. Please verify your email" });
     }
 
