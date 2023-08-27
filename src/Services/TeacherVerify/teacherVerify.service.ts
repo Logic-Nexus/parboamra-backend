@@ -3,45 +3,6 @@ import { convertIsoDate } from "../../Others/DateConvertIso";
 import { paginationCustomResult } from "../../Others/paginationCustomResult";
 import { db } from "../../utils/db.server";
 
-// model AcademicQualification {
-//     id                   Int      @id @default(autoincrement())
-//     createdAt            DateTime @default(now())
-//     updatedAt            DateTime @updatedAt
-//     education_background String   @db.VarChar(250)
-
-//     ssc_result       String    @db.VarChar(250)
-//     ssc_board        String?   @db.VarChar(250)
-//     ssc_passing_year DateTime? @db.Date
-//     ssc_institute    String?   @db.VarChar(250)
-//     ssc_group        String    @db.VarChar(250)
-//     ssc_certificate  String
-
-//     hsc_result       String    @db.VarChar(250)
-//     hsc_board        String?   @db.VarChar(250)
-//     hsc_passing_year DateTime? @db.Date
-//     hsc_institute    String?   @db.VarChar(250)
-//     hsc_group        String    @db.VarChar(250)
-//     hsc_certificate  String
-
-//     running_degree       String    @db.VarChar(250)
-//     running_institute    String    @db.VarChar(250)
-//     running_subject      String    @db.VarChar(250)
-//     running_passing_year DateTime? @db.Date
-//     running_semester     String?   @db.VarChar(250)
-//     running_cgpa         String?   @db.VarChar(250)
-
-//     nidORbirth_number String @db.VarChar(250)
-//     nidORbirth_image  String
-
-//     completed_degree String?  @db.VarChar(250)
-//     status           Boolean? @default(false)
-//     user             User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-//     // Foreign keys to link to User and Profile
-//     userId Int @unique // Foreign key column (not marked as unique, so it's not required)
-
-//     @@index([userId], name: "user_academic_index")
-//   }
 //create academicQualification
 export const createTeacherAcademicQualification = async (body: any) => {
   //   console.log(body);
@@ -99,6 +60,9 @@ export const getTeacherAcademicQualificationVerify = async (
     take: resultPerPage,
     where: {
       status: status?.toUpperCase() || "PENDING",
+    },
+    orderBy: {
+      createdAt: "desc",
     },
     include: {
       user: {
@@ -203,7 +167,17 @@ export const getAllTeacherList = async (
       isProfileVerified: queryData.isProfileVerified.toUpperCase(),
       role: queryData.role,
     },
-
+    orderBy: [
+      {
+        createdAt: "desc",
+      },
+      {
+        id: "desc",
+      },
+      {
+        updatedAt: "desc",
+      },
+    ],
     include: {
       profile: true,
       profileImages: true,
