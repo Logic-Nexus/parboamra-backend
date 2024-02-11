@@ -43,7 +43,7 @@ Create a migration from changes in Prisma schema, apply it to the database, trig
 $ npx prisma migrate dev
 
 Reset your database and apply all migrations
-$ prisma migrate reset
+$ npx prisma migrate reset
 
 Apply pending migrations to the database in production/staging
 $ prisma migrate deploy

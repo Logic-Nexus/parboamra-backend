@@ -39,18 +39,17 @@ export const getUserById = async (id: number) => {
 
 //findUser By Email
 export const findExistingUser = async (data: any): Promise<User | null> => {
-  const result = await db.user.findUnique({
+  const result = await db.user.findFirst({
     where: {
-      email: data.email,
-      // OR: [
-      //   { email: data.email },
-      //   { userName: data.userName },
-      //   { phone: Number(data?.phone) || undefined },
-      // ],
+      OR: [
+        { email: data.email },
+        { userName: data.userName },
+        { phone: Number(data?.phone) || undefined },
+      ],
     },
-    // orderBy: {
-    //   id: "asc",
-    // },
+    orderBy: {
+      id: "asc",
+    },
   });
   return result;
 };
