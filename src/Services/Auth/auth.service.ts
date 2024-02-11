@@ -42,20 +42,22 @@ type LoginData = {
 };
 
 export const loginUser = async (data: any) => {
-  const result = await db.user.findFirst({
+  const result = await db.user.findUnique({
     where: {
-      OR: [
-        {
-          email: data.email,
-        },
-        {
-          userName: data.userName,
-        },
-        {
-          phone: Number(data?.phone) || undefined,
-        },
-      ],
-      password: data.password,
+      email: data.email,
+
+      // OR: [
+      //   {
+      //     email: data.email,
+      //   },
+      //   {
+      //     userName: data.userName,
+      //   },
+      //   {
+      //     phone: Number(data?.phone) || undefined,
+      //   },
+      // ],
+      // password: data.password,
     },
   });
   //   console.log(result);
@@ -90,7 +92,7 @@ export const saveOtp = async (data: any) => {
 // User OTP Verify
 export const verifyOtp = async (data: any) => {
   const { email, usingFor } = data;
-  const result = await db.registerOtp.findFirst({
+  const result = await db.registerOtp.findUnique({
     where: {
       email: email,
       usingFor: usingFor,
